@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pattern Lock</title>
+    <style>
+      #patternLock {
+        width: 300px;
+        height: 300px;
+        margin: 50px auto;
+        border: 2px solid black;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .dot {
+        width: calc(33.33% - 20px); /* Adjusted width for space between dots */
+        height: calc(
+          33.33% - 20px
+        ); /* Adjusted height for space between dots */
+        margin: 10px; /* Added margin for space between dots */
+        border-radius: 50%;
+        background-color: #fff;
+        border: 2px solid black;
+        box-sizing: border-box;
+        position: relative;
+      }
+      .dot::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: black;
+        display: none;
+      }
+      .dot.active::before {
+        display: block;
+      }
+      .line {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+      .button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pattern Lock</h1>
+    <div id="patternLock">
+      <div class="dot" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+      <div class="dot" data-index="3"></div>
+      <div class="dot" data-index="4"></div>
+      <div class="dot" data-index="5"></div>
+      <div class="dot" data-index="6"></div>
+      <div class="dot" data-index="7"></div>
+      <div class="dot" data-index="8"></div>
+      <div class="dot" data-index="9"></div>
+      <svg class="line">
+        <path id="linePath" stroke="black" stroke-width="4" fill="none" />
+      </svg>
+    </div>
+    <button class="button" id="resetBtn">Reset</button>
+    <button class="button" id="saveBtn">Save</button>
+
+    <table id="savedTable" style="margin-top: 20px">
+      <thead>
+        <tr>
+          <th>Saved Patterns</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      const dots = document.querySelectorAll(".dot");
+      const linePath = document.getElementById("linePath");
+      const resetBtn = document.getElementById("resetBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const savedTable = document
+        .getElementById("savedTable")
+        .getElementsByTagName("tbody")[0];
+      let pattern = JSON.parse(localStorage.getItem("savedPattern")) || [];
+
+      function connectDots(dot) {
+        const index = parseInt(dot.dataset.index);
+        const rect = dot.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        dot.classList.add("active");
+        pattern.push(index);
+        updateLinePath();
+      }
+
+      function updateLinePath() {
+        let path = "";
+        pattern.forEach((circle, index) => {
+          const dot = document.querySelector(`.dot[data-index="${circle}"]`);
+          const rect = dot.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+
+          if (index === 0) {
+            path += `M${x},${y}`;
+          } else {
+            path += ` L${x},${y}`;
+          }
+        });
+        linePath.setAttribute("d", path);
+      }
+
+      function resetPattern() {
+        dots.forEach((dot) => dot.classList.remove("active"));
+        pattern = [];
+        updateLinePath();
+      }
+
+      dots.forEach((dot) => {
+        dot.addEventListener("mousedown", () => {
+          connectDots(dot);
+        });
+      });
+
+      resetBtn.addEventListener("click", () => {
+        resetPattern();
+      });
+
+      saveBtn.addEventListener("click", () => {
+        savePattern();
+      });
+
+      function savePattern() {
+        const patternString = pattern.join(" > ");
+        if (isPatternExists(patternString)) {
+          alert("Error: Pattern already exists!");
+          return;
+        }
+
+        const row = savedTable.insertRow(0);
+        const cell = row.insertCell(0);
+        cell.textContent = patternString;
+        localStorage.setItem("savedPattern", JSON.stringify(pattern));
+
+        resetPattern();
+      }
+
+      function isPatternExists(patternString) {
+        const savedPatterns = Array.from(savedTable.querySelectorAll("tr")).map(
+          (row) => row.cells[0].textContent
+        );
+        return savedPatterns.includes(patternString);
+      }
+    </script>
+  </body>
+</html>

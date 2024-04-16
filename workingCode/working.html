@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pattern Lock</title>
+    <style>
+      #patternLock {
+        width: 300px;
+        height: 300px;
+        margin: 50px auto;
+        border: 2px solid black;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .dot {
+        width: calc(33.33% - 20px); /* Adjusted width for space between dots */
+        height: calc(
+          33.33% - 20px
+        ); /* Adjusted height for space between dots */
+        margin: 10px; /* Added margin for space between dots */
+        border-radius: 50%;
+        background-color: #fff;
+        border: 2px solid black;
+        box-sizing: border-box;
+        position: relative;
+      }
+      .dot::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: black;
+        display: none;
+      }
+      .dot.active::before {
+        display: block;
+      }
+      .line {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pattern Lock</h1>
+    <div id="patternLock">
+      <div class="dot" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+      <div class="dot" data-index="3"></div>
+      <div class="dot" data-index="4"></div>
+      <div class="dot" data-index="5"></div>
+      <div class="dot" data-index="6"></div>
+      <div class="dot" data-index="7"></div>
+      <div class="dot" data-index="8"></div>
+      <div class="dot" data-index="9"></div>
+      <svg class="line">
+        <path id="linePath" stroke="black" stroke-width="4" fill="none" />
+      </svg>
+    </div>
+
+    <script>
+      const dots = document.querySelectorAll(".dot");
+      const linePath = document.getElementById("linePath");
+      let pattern = [];
+
+      function connectDots(dot) {
+        const index = parseInt(dot.dataset.index);
+        const rect = dot.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        dot.classList.add("active");
+        pattern.push({ x, y });
+        updateLinePath();
+      }
+
+      function updateLinePath() {
+        let path = "";
+        pattern.forEach((point, index) => {
+          if (index === 0) {
+            path += `M${point.x},${point.y}`;
+          } else {
+            path += ` L${point.x},${point.y}`;
+          }
+        });
+        linePath.setAttribute("d", path);
+      }
+
+      function resetPattern() {
+        dots.forEach((dot) => dot.classList.remove("active"));
+        pattern = [];
+        updateLinePath();
+      }
+
+      dots.forEach((dot) => {
+        dot.addEventListener("mousedown", () => {
+          connectDots(dot);
+        });
+      });
+
+      window.addEventListener("mousemove", (event) => {
+        if (pattern.length > 0) {
+          const mouseX = event.clientX;
+          const mouseY = event.clientY;
+
+          const lastPoint = pattern[pattern.length - 1];
+          const distanceX = mouseX - lastPoint.x;
+          const distanceY = mouseY - lastPoint.y;
+
+          const threshold = 50; // Adjust as needed
+
+          if (
+            Math.abs(distanceX) > threshold ||
+            Math.abs(distanceY) > threshold
+          ) {
+            const nearestDot = findNearestDot(mouseX, mouseY);
+            if (nearestDot) {
+              connectDots(nearestDot);
+            }
+          }
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        resetPattern();
+      });
+
+      function findNearestDot(x, y) {
+        let minDistance = Infinity;
+        let nearestDot = null;
+
+        dots.forEach((dot) => {
+          const rect = dot.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          const distance = Math.sqrt(
+            Math.pow(centerX - x, 2) + Math.pow(centerY - y, 2)
+          );
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearestDot = dot;
+          }
+        });
+
+        return nearestDot;
+      }
+    </script>
+  </body>
+</html>

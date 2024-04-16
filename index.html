@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Pattern Lock</title>
+  </head>
+  <body>
+    <h1>Pattern Lock</h1>
+    <div class="container">
+      <div id="patternLock">
+        <div class="dot" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+        <div class="dot" data-index="3"></div>
+        <div class="dot" data-index="4"></div>
+        <div class="dot" data-index="5"></div>
+        <div class="dot" data-index="6"></div>
+        <div class="dot" data-index="7"></div>
+        <div class="dot" data-index="8"></div>
+        <div class="dot" data-index="9"></div>
+        <svg class="line">
+          <path id="linePath" stroke="black" stroke-width="4" fill="none" />
+        </svg>
+      </div>
+    </div>
+    <div class="container">
+      <button class="button" id="resetBtn">Reset</button>
+      <button class="button" id="saveBtn">Save</button>
+      <button class="button" id="deleteSelectedBtn">Delete Selected</button>
+      <button class="button" id="deleteAllBtn">Delete All</button>
+    </div>
+    <div class="container">
+      <div>Record Count: <span id="recordCount">00</span></div>
+    </div>
+    <div class="container">
+      <table id="savedTable" style="margin-top: 20px">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pattern</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

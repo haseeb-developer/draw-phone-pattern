@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  /* font-family: "Ubuntu", sans-serif; */
+  /* font-family: "Nunito Sans", sans-serif; */
+  /* font-family: "Roboto", sans-serif; */
+  /* font-family: "Open Sans", sans-serif; */
+  /* font-family: "Roboto Condensed", sans-serif; */
+  /* font-family: "Oswald", sans-serif; */
+  /* font-family: "Lato", sans-serif; */
+}
+body {
+  font-weight: 700;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+#patternLock {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  border: 2px solid black;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: calc(33.33% - 20px);
+  height: calc(33.33% - 20px);
+  margin: 10px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid black;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.dot::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: black;
+  display: none;
+}
+
+.dot.active::before {
+  display: block;
+}
+
+.line {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.button {
+  margin-top: 20px;
+  margin-right: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+#savedTable {
+  width: 50%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+#savedTable th,
+#savedTable td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+
+#savedTable th {
+  background-color: #f2f2f2;
+}
+
+.record-checkbox {
+  visibility: hidden;
+}
